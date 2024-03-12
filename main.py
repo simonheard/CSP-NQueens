@@ -1,21 +1,22 @@
-def read_board_from_file(filename):
-    with open(filename, 'r') as file:
-        board = [int(line.strip()) for line in file if not line.startswith('#')]
-        board = [x - 1 for x in board]
-        board2d = [[0 for _ in range(len(board))] for _ in range(len(board))]
-        for i in range(len(board)):
-            board2d[i][board[i]] = 1
-    return board2d
-
-def print_board(board):
-    for i in range(len(board)):
-        for j in range(len(board)):
-            print (board[i][j],end=' ')
-        print()
-
-def main():
-    board = read_board_from_file('board1.txt')
-    print_board(board)
-
-if __name__ == '__main__':
-    main()
+def solve_n_queens(file):
+    with open(file, 'r') as file:
+        initial_assignment = [int(line.strip()) for line in file if line[0].isdigit()]
+    n = len(initial_assignment)
+    csp = NQueensCSP(n, initial_assignment)
+    
+    
+    
+class NQueensCSP:
+    def __init__(self, n, initial_assignment=None):
+        self.variables = list(range(n))
+        self.domains = {var: list(range(n)) for var in self.variables}
+        self.neighbors = {var: [other_var for other_var in self.variables if other_var != var] for var in self.variables}
+        self.constraints = lambda var1, val1, var2, val2: val1 != val2 and abs(var1 - var2) != abs(val1 - val2)
+        if initial_assignment:
+            for var, val in enumerate(initial_assignment):
+                self.domains[var] = [val - 1]  # Adjust for 1-indexing
+                
+    def __str__(self):
+        return f"variables: ({self.variables}), domains=({self.domains}), neighbors=({self.neighbors})"
+    
+    
